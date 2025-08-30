@@ -12,7 +12,9 @@ export function GenerateButton() {
     if (!canGenerate) return;
 
     try {
+      console.log('Starting generation process...');
       dispatch({ type: 'SET_PROCESSING', payload: true });
+      console.log('Processing state set to true');
       dispatch({ type: 'SET_ERROR', payload: null });
       
       const result = await generatePresentation({
@@ -75,10 +77,10 @@ export function GenerateButton() {
           {state.isProcessing ? (
             <>
               <div className="relative">
-                <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent" />
-                <div className="absolute inset-0 animate-ping rounded-full h-5 w-5 border border-white opacity-20" />
+                <div className="animate-spin rounded-full h-6 w-6 border-3 border-purple-300 border-t-white" />
+                <div className="absolute inset-0 animate-ping rounded-full h-6 w-6 border-2 border-white opacity-30" />
               </div>
-              <span>Generating...</span>
+              <span className="animate-pulse">Generating...</span>
             </>
           ) : (
             <>
