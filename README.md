@@ -33,7 +33,7 @@ When you upload a PowerPoint template, the app:
 
 1. Clone this repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/stay-private/presentation-ai
    cd presentation-ai
    ```
 
