@@ -108,9 +108,8 @@ async function callLLM(provider: string, apiKey: string, prompt: string): Promis
       endpoint = 'https://api.openai.com/v1/chat/completions';
       headers['Authorization'] = `Bearer ${apiKey}`;
       body = {
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-5',
         messages: [{ role: 'user', content: prompt }],
-        max_tokens: 2000,
         temperature: 0.7
       };
       break;
@@ -121,7 +120,6 @@ async function callLLM(provider: string, apiKey: string, prompt: string): Promis
       headers['anthropic-version'] = '2023-06-01';
       body = {
         model: 'claude-3-sonnet-20240229',
-        max_tokens: 2000,
         messages: [{ role: 'user', content: prompt }]
       };
       break;
