@@ -43,34 +43,39 @@ const initialState: AppState = {
 };
 
 function appReducer(state: AppState, action: AppAction): AppState {
-  switch (action.type) {
-    case 'SET_INPUT_TEXT':
-      return { ...state, inputText: action.payload };
-    case 'SET_GUIDANCE':
-      return { ...state, guidance: action.payload };
-    case 'SET_LLM_PROVIDER':
-      return { ...state, llmProvider: action.payload };
-    case 'SET_API_KEY':
-      return { ...state, apiKey: action.payload };
-    case 'SET_TEMPLATE_FILE':
-      return { ...state, templateFile: action.payload };
-    case 'SET_TEMPLATE_DATA':
-      return { ...state, templateData: action.payload };
-    case 'SET_PROCESSING':
-      return { ...state, isProcessing: action.payload };
-    case 'SET_PROCESSING_STEP':
-      return { ...state, processingStep: action.payload };
-    case 'SET_ERROR':
-      return { ...state, error: action.payload, isProcessing: false };
-    case 'SET_GENERATED_SLIDES':
-      return { ...state, generatedSlides: action.payload };
-    case 'SET_SHOW_PREVIEW':
-      return { ...state, showPreview: action.payload };
-    case 'RESET_STATE':
-      return { ...initialState, llmProvider: state.llmProvider, apiKey: state.apiKey };
-    default:
-      return state;
-  }
+  console.log(`[${new Date().toISOString()}] appReducer: Action`, action);
+  const newState = (() => {
+    switch (action.type) {
+      case 'SET_INPUT_TEXT':
+        return { ...state, inputText: action.payload };
+      case 'SET_GUIDANCE':
+        return { ...state, guidance: action.payload };
+      case 'SET_LLM_PROVIDER':
+        return { ...state, llmProvider: action.payload };
+      case 'SET_API_KEY':
+        return { ...state, apiKey: action.payload };
+      case 'SET_TEMPLATE_FILE':
+        return { ...state, templateFile: action.payload };
+      case 'SET_TEMPLATE_DATA':
+        return { ...state, templateData: action.payload };
+      case 'SET_PROCESSING':
+        return { ...state, isProcessing: action.payload };
+      case 'SET_PROCESSING_STEP':
+        return { ...state, processingStep: action.payload };
+      case 'SET_ERROR':
+        return { ...state, error: action.payload, isProcessing: action.payload ? false : state.isProcessing };
+      case 'SET_GENERATED_SLIDES':
+        return { ...state, generatedSlides: action.payload };
+      case 'SET_SHOW_PREVIEW':
+        return { ...state, showPreview: action.payload };
+      case 'RESET_STATE':
+        return { ...initialState, llmProvider: state.llmProvider, apiKey: state.apiKey };
+      default:
+        return state;
+    }
+  })();
+  console.log(`[${new Date().toISOString()}] appReducer: New state`, newState);
+  return newState;
 }
 
 const AppContext = createContext<{

@@ -11,14 +11,14 @@ export function GenerateButton() {
   const handleGenerate = async () => {
     if (!canGenerate || state.isProcessing) return;
 
-    console.log('Generate button clicked, starting process...');
+    console.log(`[${new Date().toISOString()}] handleGenerate: Start`);
     
     try {
+      console.log(`[${new Date().toISOString()}] handleGenerate: Setting isProcessing to true`);
       dispatch({ type: 'SET_PROCESSING', payload: true });
       dispatch({ type: 'SET_ERROR', payload: null });
       
-      console.log('Processing state set to true, isProcessing:', true);
-      
+      console.log(`[${new Date().toISOString()}] handleGenerate: Calling generatePresentation`);
       const result = await generatePresentation({
         inputText: state.inputText,
         guidance: state.guidance,
@@ -26,22 +26,23 @@ export function GenerateButton() {
         apiKey: state.apiKey,
         templateData: state.templateData || null,
         onProgress: (step: string) => {
-          console.log('Progress step:', step);
+          console.log(`[${new Date().toISOString()}] onProgress: ${step}`);
           dispatch({ type: 'SET_PROCESSING_STEP', payload: step });
         }
       });
+      console.log(`[${new Date().toISOString()}] handleGenerate: generatePresentation finished`);
 
       dispatch({ type: 'SET_GENERATED_SLIDES', payload: result.slides });
       dispatch({ type: 'SET_SHOW_PREVIEW', payload: true });
       
     } catch (error) {
-      console.error('Generation error:', error);
+      console.error(`[${new Date().toISOString()}] handleGenerate: Error`, error);
       dispatch({ 
         type: 'SET_ERROR', 
         payload: error instanceof Error ? error.message : 'Failed to generate presentation'
       });
     } finally {
-      console.log('Setting processing to false');
+      console.log(`[${new Date().toISOString()}] handleGenerate: Setting isProcessing to false`);
       dispatch({ type: 'SET_PROCESSING', payload: false });
       dispatch({ type: 'SET_PROCESSING_STEP', payload: '' });
     }
