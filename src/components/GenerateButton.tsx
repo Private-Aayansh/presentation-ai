@@ -74,7 +74,10 @@ export function GenerateButton() {
         >
           {state.isProcessing ? (
             <>
-              <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
+              <div className="relative">
+                <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent" />
+                <div className="absolute inset-0 animate-ping rounded-full h-5 w-5 border border-white opacity-20" />
+              </div>
               <span>Generating...</span>
             </>
           ) : (
