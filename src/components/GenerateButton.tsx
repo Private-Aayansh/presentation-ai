@@ -1,5 +1,5 @@
 import React from 'react';
-import { Wand2, Download } from 'lucide-react';
+import { Wand2, Download, Loader2 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { generatePresentation } from '../utils/presentationGenerator';
 
@@ -9,13 +9,15 @@ export function GenerateButton() {
   const canGenerate = state.inputText.trim() && state.apiKey;
 
   const handleGenerate = async () => {
-    if (!canGenerate) return;
+    if (!canGenerate || state.isProcessing) return;
 
+    console.log('Generate button clicked, starting process...');
+    
     try {
-      console.log('Starting generation process...');
       dispatch({ type: 'SET_PROCESSING', payload: true });
-      console.log('Processing state set to true');
       dispatch({ type: 'SET_ERROR', payload: null });
+      
+      console.log('Processing state set to true, isProcessing:', true);
       
       const result = await generatePresentation({
         inputText: state.inputText,
@@ -24,6 +26,7 @@ export function GenerateButton() {
         apiKey: state.apiKey,
         templateData: state.templateData || null,
         onProgress: (step: string) => {
+          console.log('Progress step:', step);
           dispatch({ type: 'SET_PROCESSING_STEP', payload: step });
         }
       });
@@ -32,15 +35,19 @@ export function GenerateButton() {
       dispatch({ type: 'SET_SHOW_PREVIEW', payload: true });
       
     } catch (error) {
+      console.error('Generation error:', error);
       dispatch({ 
         type: 'SET_ERROR', 
         payload: error instanceof Error ? error.message : 'Failed to generate presentation'
       });
     } finally {
+      console.log('Setting processing to false');
       dispatch({ type: 'SET_PROCESSING', payload: false });
       dispatch({ type: 'SET_PROCESSING_STEP', payload: '' });
     }
   };
+
+  console.log('Current state - isProcessing:', state.isProcessing, 'canGenerate:', canGenerate);
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
@@ -68,29 +75,28 @@ export function GenerateButton() {
         <button
           onClick={handleGenerate}
           disabled={!canGenerate || state.isProcessing}
-          className={`w-full flex items-center justify-center space-x-2 py-3 px-4 rounded-lg font-medium transition-all ${
-            canGenerate && !state.isProcessing
+          className={`w-full flex items-center justify-center space-x-3 py-4 px-6 rounded-lg font-semibold text-lg transition-all duration-200 ${
+            state.isProcessing
+              ? 'bg-blue-500 text-white cursor-wait'
+              : canGenerate
               ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
               : 'bg-gray-300 text-gray-500 cursor-not-allowed'
           }`}
         >
           {state.isProcessing ? (
             <>
-              <div className="relative">
-                <div className="animate-spin rounded-full h-6 w-6 border-3 border-purple-300 border-t-white" />
-                <div className="absolute inset-0 animate-ping rounded-full h-6 w-6 border-2 border-white opacity-30" />
-              </div>
-              <span className="animate-pulse">Generating...</span>
+              <Loader2 className="h-6 w-6 animate-spin text-white" />
+              <span className="animate-pulse">Generating Presentation...</span>
             </>
           ) : (
             <>
-              <Wand2 className="h-4 w-4" />
+              <Wand2 className="h-5 w-5" />
               <span>Generate Presentation</span>
             </>
           )}
         </button>
 
-        {state.generatedSlides.length > 0 && (
+        {state.generatedSlides.length > 0 && !state.isProcessing && (
           <button
             onClick={() => dispatch({ type: 'SET_SHOW_PREVIEW', payload: true })}
             className="w-full flex items-center justify-center space-x-2 py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"

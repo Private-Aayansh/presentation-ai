@@ -16,8 +16,8 @@ export async function generatePresentation(request: GenerationRequest) {
   try {
     onProgress('Analyzing your content with AI...');
     
-    // Add temporary delay to make loading UI visible
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Add longer delay to make loading UI clearly visible
+    await new Promise(resolve => setTimeout(resolve, 2000));
     
     // Generate slide structure using LLM
     const slides = await generateSlideStructure({
@@ -29,8 +29,8 @@ export async function generatePresentation(request: GenerationRequest) {
 
     onProgress('Applying template styling...');
     
-    // Add another delay for styling step
-    await new Promise(resolve => setTimeout(resolve, 800));
+    // Add longer delay for styling step
+    await new Promise(resolve => setTimeout(resolve, 1500));
     
     // Apply template styling to slides
     const styledSlides = slides.map((slide, index) => {
@@ -59,8 +59,8 @@ export async function generatePresentation(request: GenerationRequest) {
 
     onProgress('Finalizing presentation...');
 
-    // Final delay before completion
-    await new Promise(resolve => setTimeout(resolve, 500));
+    // Longer final delay before completion
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
     return {
       slides: styledSlides,
